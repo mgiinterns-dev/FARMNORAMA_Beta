@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h3 class="text-center mb-3">Profile Setup</h3>
+<p class="text-muted text-center mb-4">Step 1 of 2</p>
+
+<form action="/save_account" method="POST">
+
+<label class="form-label">Full Name</label>
+<input class="form-control mb-3" name="fullname" required>
+
+<label class="form-label">Password</label>
+<input class="form-control mb-3" type="password" name="password" required>
+
+<button class="green-btn">Continue</button>
+
+</form>
+
+{% endblock %}

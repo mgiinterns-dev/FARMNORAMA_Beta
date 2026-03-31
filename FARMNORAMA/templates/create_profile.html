@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="auth-box">
+
+<h2>Create Your Profile</h2>
+
+<form action="/save_profile" method="POST">
+
+<input class="auth-input" name="fullname" placeholder="Full Name" required>
+<input class="auth-input" name="phone" placeholder="Phone Number">
+<input class="auth-input" name="address" placeholder="Address">
+<textarea class="auth-input" name="bio" placeholder="Short Bio"></textarea>
+
+<button class="auth-btn">Finish Setup</button>
+
+</form>
+
+</div>
+
+{% endblock %}
