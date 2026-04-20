@@ -1,0 +1,1 @@
+Paste these files into your current Farmnorama project. Keep your existing database.db and run the app once so the new audit_logs table gets created automatically.

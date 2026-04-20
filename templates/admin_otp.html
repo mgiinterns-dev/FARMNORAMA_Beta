@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="auth-box">
+    <img src="{{ url_for('static', filename='images/farmnorama_logo.png') }}" class="big-logo small-top-logo" alt="Farmnorama Logo">
+
+    <h2>Admin Security Check</h2>
+    <p class="sub-text">Enter the OTP sent to your admin email</p>
+
+    {% if error %}
+    <p class="error-text">{{ error }}</p>
+    {% endif %}
+    {% if message %}
+    <p class="success-text">{{ message }}</p>
+    {% endif %}
+
+    <form action="/admin/verify_otp" method="POST">
+        <input type="text" name="otp" placeholder="Enter OTP" required>
+        <button class="auth-btn">Verify</button>
+    </form>
+
+    <a class="forgot-link" href="/admin/resend_otp">Resend OTP</a>
+</div>
+
+{% endblock %}

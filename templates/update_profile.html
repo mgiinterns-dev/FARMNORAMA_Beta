@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="edit-container">
+    <h2>Update Profile</h2>
+    <form action="/update_profile" method="POST">
+        <input type="text" name="fullname" placeholder="Full Name" value="{{ profile[2] if profile else '' }}">
+        <input type="text" name="phone" placeholder="Phone Number" value="{{ profile[3] if profile else '' }}">
+        <input type="text" name="address" placeholder="Address" value="{{ profile[4] if profile else '' }}">
+        <textarea name="bio" placeholder="Bio">{{ profile[5] if profile else '' }}</textarea>
+        <input type="text" name="company" placeholder="Company" value="{{ profile[6] if profile else '' }}">
+        <input type="text" name="position" placeholder="Position" value="{{ profile[7] if profile else '' }}">
+        <input type="text" name="website" placeholder="Website" value="{{ profile[8] if profile else '' }}">
+        
+        <button type="submit" class="save-btn">Save Changes</button>
+        <button type="button" onclick="history.back()">Cancel</button>
+    </form>
+</div>
+{% endblock %}

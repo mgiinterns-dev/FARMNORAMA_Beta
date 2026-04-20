@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="auth-box">
+
+<h2>My Profile</h2>
+
+<div style="text-align:center; margin-bottom:15px;">
+    <img id="profilePreview"
+         src="{% if profile and profile['photo'] %}{{ url_for('static', filename='uploads/' + profile['photo']) }}{% else %}{{ url_for('static', filename='images/default.png') }}{% endif %}"
+         style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:2px solid #1a8129;">
+</div>
+
+<form action="/update_profile" method="POST" enctype="multipart/form-data">
+
+<input class="auth-input" name="fullname" value="{{ profile['fullname'] if profile else '' }}" placeholder="Full Name" required>
+<input class="auth-input" name="phone" value="{{ profile['phone'] if profile else '' }}" placeholder="Phone" required>
+<input class="auth-input" name="address" value="{{ profile['address'] if profile else '' }}" placeholder="Address" required>
+<input class="auth-input" name="company" value="{{ profile['company'] if profile else '' }}" placeholder="Company / Organization">
+
+<select class="auth-input" name="position" id="position" onchange="toggleOtherPosition()" required>
+    <option value="">Select Position / Profession</option>
+    {% set current_position = profile['position'] if profile else '' %}
+    {% set default_positions = [
+        'Farmer','Agricultural Engineer','Agronomist','Farm Manager','Livestock Handler','Fisherman',
+        'Supply Chain Manager','Warehouse Staff','Delivery Personnel','Sales Representative',
+        'Marketing Specialist','Data Analyst','Software Developer','IT Support','Project Manager',
+        'Business Owner','Entrepreneur','Student','Researcher','Government Worker','NGO Worker',
+        'Teacher','Consultant'
+    ] %}
+    {% for item in default_positions %}
+    <option value="{{ item }}" {% if current_position == item %}selected{% endif %}>{{ item }}</option>
+    {% endfor %}
+    <option value="Other" {% if current_position and current_position not in default_positions %}selected{% endif %}>Other</option>
+</select>
+
+<input id="position_other"
+       class="auth-input {% if not current_position or current_position in default_positions %}d-none{% endif %}"
+       name="position_other"
+       placeholder="Please specify profession"
+       value="{% if current_position and current_position not in default_positions %}{{ current_position }}{% endif %}">
+
+<input class="auth-input" name="website" value="{{ profile['website'] if profile else '' }}" placeholder="Website">
+
+<select class="auth-input" name="gender">
+    <option value="">Select Gender</option>
+    <option value="Male" {% if profile and profile['gender'] == 'Male' %}selected{% endif %}>Male</option>
+    <option value="Female" {% if profile and profile['gender'] == 'Female' %}selected{% endif %}>Female</option>
+    <option value="Other" {% if profile and profile['gender'] == 'Other' %}selected{% endif %}>Other</option>
+    <option value="Prefer not to say" {% if profile and profile['gender'] == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option>
+</select>
+
+<input type="file" name="photo" accept="image/*" class="auth-input" onchange="previewProfileImage(event)">
+
+<textarea class="auth-input" name="bio" placeholder="Bio">{{ profile['bio'] if profile else '' }}</textarea>
+
+<button class="auth-btn">Update Profile</button>
+
+</form>
+
+<hr>
+
+<h4 style="color:#ef4444;">Danger Zone</h4>
+<p style="font-size:13px; color:#666;">Type your password below to permanently delete your account.</p>
+
+<input id="confirmPass" type="password" class="auth-input" placeholder="Enter password">
+<button class="delete-btn" onclick="deleteAccount()">Delete Account</button>
+
+<p id="msg" class="error-text"></p>
+
+</div>
+
+<script>
+function toggleOtherPosition(){
+    const select = document.getElementById("position");
+    const other = document.getElementById("position_other");
+
+    if(select.value === "Other"){
+        other.classList.remove("d-none");
+        other.required = true;
+    }else{
+        other.classList.add("d-none");
+        other.required = false;
+        other.value = "";
+    }
+}
+
+function previewProfileImage(event){
+    const reader = new FileReader();
+    reader.onload = function(){
+        document.getElementById("profilePreview").src = reader.result;
+    };
+    if(event.target.files[0]){
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+
+function deleteAccount(){
+    let pass = document.getElementById("confirmPass").value;
+    let msg = document.getElementById("msg");
+
+    msg.innerText = "";
+
+    if(!pass){
+        msg.innerText = "Please enter your password.";
+        return;
+    }
+
+    if(!confirm("Are you sure you want to permanently delete your account?")){
+        return;
+    }
+
+    fetch("/delete_account",{
+        method:"POST",
+        headers:{"Content-Type":"application/x-www-form-urlencoded"},
+        body:"password=" + encodeURIComponent(pass)
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.status === "wrong_password"){
+            msg.innerText = "Incorrect password!";
+        }else if(data.status === "deleted"){
+            window.location = "/";
+        }else{
+            msg.innerText = "Something went wrong.";
+        }
+    })
+    .catch(()=>{
+        msg.innerText = "Server error.";
+    });
+}
+</script>
+
+{% endblock %}

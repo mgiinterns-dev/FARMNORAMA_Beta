@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="admin-panel-shell">
+    <div class="admin-panel-header">
+        <div>
+            <h2>Manage Users</h2>
+            <p class="sub-text">Search, filter, promote, demote, and remove accounts</p>
+        </div>
+        <a href="/admin/dashboard" class="admin-back-link">← Back to Dashboard</a>
+    </div>
+
+    <div class="admin-toolbar-card">
+        <form method="GET" action="/admin/users" class="admin-toolbar">
+            <input type="text" name="q" class="search-bar" placeholder="Search by email, role, function, or usage..." value="{{ request.args.get('q', '') }}">
+            <select name="verified" class="sort-dropdown">
+                <option value="">All Verification</option>
+                <option value="1" {% if request.args.get('verified') == '1' %}selected{% endif %}>Verified</option>
+                <option value="0" {% if request.args.get('verified') == '0' %}selected{% endif %}>Unverified</option>
+            </select>
+            <select name="admin" class="sort-dropdown">
+                <option value="">All Roles</option>
+                <option value="1" {% if request.args.get('admin') == '1' %}selected{% endif %}>Admins</option>
+                <option value="0" {% if request.args.get('admin') == '0' %}selected{% endif %}>Users</option>
+            </select>
+            <button class="auth-btn admin-filter-btn" type="submit">Apply</button>
+        </form>
+    </div>
+
+    <div class="admin-table-card">
+        {% if error %}<p class="error-text">{{ error }}</p>{% endif %}
+        {% if users %}
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr><th>Email</th><th>Verified</th><th>Role</th><th>Work Role</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user['email'] }}</td>
+                        <td><span class="badge {{ 'badge-success' if user['verified'] == 1 else 'badge-muted' }}">{{ 'Verified' if user['verified'] == 1 else 'Pending' }}</span></td>
+                        <td><span class="badge {{ 'badge-admin' if user['is_admin'] == 1 else 'badge-user' }}">{{ 'Admin' if user['is_admin'] == 1 else 'User' }}</span></td>
+                        <td>{{ user['role'] or '—' }}</td>
+                        <td>
+                            <div class="action-row">
+                                {% if session.get('email') != user['email'] %}
+                                    {% if user['is_admin'] == 1 %}
+                                    <form method="POST" action="/admin/demote_user" class="inline-form">
+                                        <input type="hidden" name="email" value="{{ user['email'] }}">
+                                        <button type="submit" class="table-btn table-btn-secondary">Demote</button>
+                                    </form>
+                                    {% else %}
+                                    <form method="POST" action="/admin/promote_user" class="inline-form">
+                                        <input type="hidden" name="email" value="{{ user['email'] }}">
+                                        <button type="submit" class="table-btn">Promote</button>
+                                    </form>
+                                    {% endif %}
+                                    <form method="POST" action="/admin/delete_user" class="inline-form" onsubmit="return confirm('Delete this user and all related data?');">
+                                        <input type="hidden" name="email" value="{{ user['email'] }}">
+                                        <button type="submit" class="table-btn table-btn-danger">Delete</button>
+                                    </form>
+                                {% else %}
+                                    <span class="self-note">Current account</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h4>No users found</h4>
+            <p>Try changing your search or filters.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

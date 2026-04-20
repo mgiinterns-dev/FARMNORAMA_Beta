@@ -1,0 +1,2 @@
+ALTER TABLE users ADD COLUMN admin_level TEXT DEFAULT 'user';
+ALTER TABLE profiles ADD COLUMN age INTEGER;

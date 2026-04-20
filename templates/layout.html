@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Farmnorama</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+<header class="main-header">
+    <img src="{{ url_for('static', filename='images/mgi_logo.png') }}" class="mgi-logo" alt="MGI Logo">
+    <div class="nav-links">
+        {% if session.get("email") %}
+            <a href="{{ '/admin/dashboard' if session.get('admin_level') in ['super_admin', 'sub_admin'] else '/dashboard' }}">Dashboard</a>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/">Login</a>
+            <a href="/signup">Sign Up</a>
+        {% endif %}
+    </div>
+</header>
+
+<div class="page-shell">
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    © 2026 Farmnorama | Powered by MGI International Ltd.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+
+.admin-box{
+    width: 500px;
+    max-width: 100%;
+}
+
+.admin-stats{
+    margin: 20px 0;
+    text-align: left;
+}
+
+.admin-stats p{
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.admin-actions{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.admin-link{
+    text-decoration: none;
+    text-align: center;
+    display: block;
+}
