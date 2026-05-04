@@ -1,0 +1,131 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="admin-panel-shell">
+    <div class="admin-panel-header">
+        <div>
+            <h2>Manage Users</h2>
+            <p class="sub-text">Includes next-level, final-boss, and ultra-boss controls.</p>
+        </div>
+        <a href="/admin/dashboard" class="admin-back-link">← Back to Dashboard</a>
+    </div>
+
+    <div class="admin-toolbar-card">
+        <form method="GET" action="/admin/users" class="admin-toolbar">
+            <input type="text" name="q" class="search-bar" placeholder="Search by email, role, function, or usage..." value="{{ request.args.get('q', '') }}">
+            <select name="verified" class="sort-dropdown">
+                <option value="">All Verification</option>
+                <option value="1" {% if request.args.get('verified') == '1' %}selected{% endif %}>Verified</option>
+                <option value="0" {% if request.args.get('verified') == '0' %}selected{% endif %}>Unverified</option>
+            </select>
+            <select name="admin_level" class="sort-dropdown">
+                <option value="">All Roles</option>
+                <option value="super_admin" {% if request.args.get('admin_level') == 'super_admin' %}selected{% endif %}>Super Admin</option>
+                <option value="sub_admin" {% if request.args.get('admin_level') == 'sub_admin' %}selected{% endif %}>Sub Admin</option>
+                <option value="user" {% if request.args.get('admin_level') == 'user' %}selected{% endif %}>User</option>
+            </select>
+            <select name="banned" class="sort-dropdown">
+                <option value="">All Status</option>
+                <option value="1" {% if request.args.get('banned') == '1' %}selected{% endif %}>Banned</option>
+                <option value="0" {% if request.args.get('banned') == '0' %}selected{% endif %}>Active</option>
+            </select>
+            <button class="auth-btn admin-filter-btn" type="submit">Apply</button>
+        </form>
+    </div>
+
+    <div class="admin-table-card">
+        {% if error %}<p class="error-text">{{ error }}</p>{% endif %}
+        {% if users %}
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Verified</th>
+                        <th>Role</th>
+                        <th>Work Role</th>
+                        <th>Admin Level</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user['email'] }}</td>
+                        <td><span class="badge {{ 'badge-success' if user['verified'] == 1 else 'badge-muted' }}">{{ 'Verified' if user['verified'] == 1 else 'Pending' }}</span></td>
+                        <td>{{ user['role'] or '—' }}</td>
+                        <td>{{ user['function'] or '—' }}</td>
+                        <td>
+                            {% if user['admin_level'] == 'super_admin' %}
+                                <span class="badge badge-super">Super Admin</span>
+                            {% elif user['admin_level'] == 'sub_admin' %}
+                                <span class="badge badge-admin">Sub Admin</span>
+                            {% else %}
+                                <span class="badge badge-user">User</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user['is_banned'] == 1 %}
+                                <span class="badge badge-danger">Banned</span>
+                            {% else %}
+                                <span class="badge badge-success">Active</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="action-row">
+                                <a href="/admin/user_login_history/{{ user['email'] }}" class="table-btn table-btn-secondary">Login History</a>
+
+                                {% if session.get('email') != user['email'] %}
+                                    {% if current_admin_level == 'super_admin' and user['admin_level'] == 'user' %}
+                                    <form method="POST" action="/admin/promote_to_sub_admin" class="inline-form">
+                                        <input type="hidden" name="email" value="{{ user['email'] }}">
+                                        <button type="submit" class="table-btn">Make Sub Admin</button>
+                                    </form>
+                                    {% endif %}
+
+                                    {% if current_admin_level == 'super_admin' and user['admin_level'] == 'sub_admin' %}
+                                    <form method="POST" action="/admin/demote_to_user" class="inline-form">
+                                        <input type="hidden" name="email" value="{{ user['email'] }}">
+                                        <button type="submit" class="table-btn table-btn-secondary">Demote</button>
+                                    </form>
+                                    {% endif %}
+
+                                    {% if user['admin_level'] != 'super_admin' and (current_admin_level == 'super_admin' or user['admin_level'] == 'user') %}
+                                        {% if user['is_banned'] == 1 %}
+                                        <form method="POST" action="/admin/unban_user" class="inline-form">
+                                            <input type="hidden" name="email" value="{{ user['email'] }}">
+                                            <button type="submit" class="table-btn">Unban</button>
+                                        </form>
+                                        {% else %}
+                                        <form method="POST" action="/admin/ban_user" class="inline-form">
+                                            <input type="hidden" name="email" value="{{ user['email'] }}">
+                                            <button type="submit" class="table-btn table-btn-secondary">Ban</button>
+                                        </form>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    {% if user['admin_level'] != 'super_admin' and (current_admin_level == 'super_admin' or user['admin_level'] == 'user') %}
+                                    <form method="POST" action="/admin/delete_user" class="inline-form" onsubmit="return confirm('Delete this user and all related data?');">
+                                        <input type="hidden" name="email" value="{{ user['email'] }}">
+                                        <button type="submit" class="table-btn table-btn-danger">Delete</button>
+                                    </form>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="self-note">Current account</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h4>No users found</h4>
+            <p>Try changing your search or filters.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="auth-box admin-panel admin-logs-panel">
+    <h2>{{ history_title or 'Audit Logs' }}</h2>
+    {% if error %}
+    <p class="error-text">{{ error }}</p>
+    {% endif %}
+
+    {% if not history_title %}
+    <div class="admin-toolbar-card admin-toolbar-card-tight">
+        <form method="GET" action="/admin/audit_logs" class="admin-toolbar">
+            <input type="text" name="q" class="search-bar" placeholder="Search email or details..." value="{{ request.args.get('q', '') }}">
+            <select name="action" class="sort-dropdown">
+                <option value="">All Actions</option>
+                {% for item in actions %}
+                <option value="{{ item['action'] }}" {% if request.args.get('action') == item['action'] %}selected{% endif %}>{{ item['action'] }}</option>
+                {% endfor %}
+            </select>
+            <button class="auth-btn admin-filter-btn" type="submit">Search</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="table-responsive">
+        <table class="table custom-table admin-log-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log['created_at'] }}</td>
+                    <td>{{ log['email'] or '-' }}</td>
+                    <td>{{ log['action'] }}</td>
+                    <td>{{ log['details'] or '-' }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">No audit logs yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

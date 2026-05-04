@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="auth-box admin-panel admin-logs-panel">
+    <h2>Reports</h2>
+    <p class="sub-text">Recent system activity for admin review.</p>
+
+    <div class="table-responsive">
+        <table class="table custom-table admin-log-table">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Action</th>
+                    <th>Details</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log['email'] or '-' }}</td>
+                    <td>{{ log['action'] }}</td>
+                    <td>{{ log['details'] or '-' }}</td>
+                    <td>{{ log['created_at'] }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">No report data available yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

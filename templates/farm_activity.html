@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="farm-page-wrap">
+    <div class="farm-page-header">
+        <div>
+            <p class="farm-kicker">FARMNORAMA Activity</p>
+            <h1>Farm Activity Logs</h1>
+            <p class="farm-subtitle">
+                Review your recent FARMNORAMA actions, including farm updates, readings, deletions, and report exports.
+            </p>
+        </div>
+
+        <a href="/dashboard" class="farm-secondary-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Dashboard
+        </a>
+    </div>
+
+    {% if logs %}
+        <div class="farm-activity-list">
+            {% for log in logs %}
+                <div class="farm-activity-card">
+                    <div class="farm-activity-icon">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+
+                    <div>
+                        <h3>{{ log['action'].replace('_', ' ').title() }}</h3>
+                        <p>{{ log['details'] or 'No details provided.' }}</p>
+                        <small>{{ log['created_at'] }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="farm-empty-state">
+            <div class="farm-empty-icon">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <h2>No farm activity yet</h2>
+            <p>
+                Your FARMNORAMA activities will appear here after adding farms, editing readings,
+                deleting records, or exporting reports.
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

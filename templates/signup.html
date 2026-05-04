@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="auth-box premium-auth-box signup-flow-box">
+    <img src="{{ url_for('static', filename='images/farmnorama_logo.png') }}" class="big-logo premium-big-logo" alt="Farmnorama Logo">
+
+    <div class="steps">
+        <span class="active">1</span>
+        <span>2</span>
+        <span>3</span>
+    </div>
+
+    <h2 class="welcome-text">Create Account</h2>
+    <p class="sub-text">Step 1 of 3: Enter your account details</p>
+
+    {% if error == "exists" %}
+    <p class="error-text">Email already exists</p>
+    {% elif error %}
+    <p class="error-text">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" action="/create_account" onsubmit="return validateSignupPassword();">
+        <input type="email" name="email" placeholder="Email" required>
+
+        <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Password" minlength="8" required oninput="checkStrength()">
+            <button type="button" class="toggle-eye-btn" onclick="togglePassword()" aria-label="Toggle password visibility">
+                <i class="fa-solid fa-eye toggle-eye"></i>
+            </button>
+        </div>
+
+        <div class="strength-wrap">
+            <div class="strength-bar-bg">
+                <div id="strength-bar" class="strength-bar-fill"></div>
+            </div>
+            <p id="strength-text" class="strength-text">Enter a password</p>
+        </div>
+
+        <button class="auth-btn">Next Step</button>
+    </form>
+</div>
+
+<script>
+function togglePassword(){
+    const input = document.getElementById("password");
+    const icon = document.querySelector(".toggle-eye");
+
+    if(input.type === "password"){
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    }else{
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+
+function checkStrength(){
+    const input = document.getElementById("password");
+    const text = document.getElementById("strength-text");
+    const bar = document.getElementById("strength-bar");
+    const val = input.value;
+
+    let score = 0;
+    if(val.length >= 8) score++;
+    if(/[A-Z]/.test(val)) score++;
+    if(/[a-z]/.test(val)) score++;
+    if(/[0-9]/.test(val)) score++;
+    if(/[^A-Za-z0-9]/.test(val)) score++;
+
+    bar.className = "strength-bar-fill";
+
+    if(val.length === 0){
+        text.innerText = "Enter a password";
+        text.style.color = "#6b7280";
+        bar.style.width = "0%";
+        return;
+    }
+
+    if(val.length < 8 || score <= 2){
+        text.innerText = "Weak";
+        text.style.color = "#ef4444";
+        bar.classList.add("weak");
+        bar.style.width = "33%";
+    }else if(score === 3 || score === 4){
+        text.innerText = "Strong";
+        text.style.color = "#f59e0b";
+        bar.classList.add("strong");
+        bar.style.width = "66%";
+    }else{
+        text.innerText = "Very Strong";
+        text.style.color = "#22c55e";
+        bar.classList.add("very-strong");
+        bar.style.width = "100%";
+    }
+}
+
+function validateSignupPassword(){
+    const input = document.getElementById("password");
+    const text = document.getElementById("strength-text");
+
+    if(input.value.length < 8){
+        text.innerText = "Password must be at least 8 characters";
+        text.style.color = "#ef4444";
+        return false;
+    }
+
+    return true;
+}
+</script>
+{% endblock %}

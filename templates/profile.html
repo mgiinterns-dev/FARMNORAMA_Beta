@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="auth-box profile-box">
+  <img src="{{ url_for('static', filename='images/farmnorama_logo.png') }}" class="auth-logo auth-logo-lg profile-flow-logo" alt="Farmnorama Logo">
+  <h2>My Profile</h2><p class="sub-text">Update your personal information and profile photo</p>
+  {% if error %}<p class="error-text">{{ error }}</p>{% endif %}
+  <form action="/update_profile" method="POST" enctype="multipart/form-data">
+    <div class="avatar-upload"><input type="file" id="photoInput" name="photo" accept="image/*" hidden onchange="previewProfileImage(event)"><label for="photoInput" class="avatar-label" title="Change profile photo"><img id="profilePreview" src="{% if profile and profile['photo'] %}{{ url_for('static', filename='uploads/' + profile['photo']) }}{% else %}{{ url_for('static', filename='images/default.png') }}{% endif %}" onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/default.png') }}';" class="profile-avatar" alt="Profile Photo"><div class="avatar-overlay"><i class="fa-solid fa-camera"></i><span>Change Photo</span></div></label></div>
+    <input class="auth-input" name="fullname" value="{{ profile['fullname'] if profile else '' }}" placeholder="Full Name" required>
+    <input class="auth-input phone-only" name="phone" value="{{ profile['phone'] if profile else '' }}" placeholder="Phone" maxlength="15" required>
+    <input class="auth-input" name="age" type="number" min="1" max="120" value="{{ profile['age'] if profile and profile['age'] is not none else '' }}" placeholder="Age" required>
+    <input class="auth-input" name="address" value="{{ profile['address'] if profile else '' }}" placeholder="Address" required>
+    <input class="auth-input" name="company" value="{{ profile['company'] if profile else '' }}" placeholder="Company / Organization">
+    <select class="auth-input" name="position" id="position" onchange="toggleOtherPosition()" required><option value="">Select Position / Profession</option>{% set current_position = profile['position'] if profile else '' %}{% set default_positions = ['Farmer','Agricultural Engineer','Agronomist','Farm Manager','Livestock Handler','Fisherman','Supply Chain Manager','Warehouse Staff','Delivery Personnel','Sales Representative','Marketing Specialist','Data Analyst','Software Developer','IT Support','Project Manager','Business Owner','Entrepreneur','Student','Researcher','Government Worker','NGO Worker','Teacher','Consultant'] %}{% for item in default_positions %}<option value="{{ item }}" {% if current_position == item %}selected{% endif %}>{{ item }}</option>{% endfor %}<option value="Other" {% if current_position and current_position not in default_positions %}selected{% endif %}>Other</option></select>
+    <input id="position_other" class="auth-input {% if not current_position or current_position in default_positions %}d-none{% endif %}" name="position_other" placeholder="Please specify profession" value="{% if current_position and current_position not in default_positions %}{{ current_position }}{% endif %}">
+    <input class="auth-input" name="website" value="{{ profile['website'] if profile else '' }}" placeholder="Website">
+    <select class="auth-input" name="gender"><option value="">Select Gender</option><option value="Male" {% if profile and profile['gender'] == 'Male' %}selected{% endif %}>Male</option><option value="Female" {% if profile and profile['gender'] == 'Female' %}selected{% endif %}>Female</option><option value="Other" {% if profile and profile['gender'] == 'Other' %}selected{% endif %}>Other</option><option value="Prefer not to say" {% if profile and profile['gender'] == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option></select>
+    <textarea class="auth-input" name="bio" placeholder="Bio">{{ profile['bio'] if profile else '' }}</textarea>
+    <button class="auth-btn">Update Profile</button>
+  </form><hr><h4 style="color:#ef4444;">Danger Zone</h4><p style="font-size:13px; color:#666;">Type your password below to permanently delete your account.</p><input id="confirmPass" type="password" class="auth-input" placeholder="Enter password"><button class="delete-btn" onclick="deleteAccount()">Delete Account</button><p id="msg" class="error-text"></p>
+</div>
+<script>
+function toggleOtherPosition(){const s=document.getElementById("position"),o=document.getElementById("position_other");if(s.value==="Other"){o.classList.remove("d-none");o.required=true;}else{o.classList.add("d-none");o.required=false;o.value="";}}
+function previewProfileImage(event){const file=event.target.files[0]; if(!file) return; const r=new FileReader(); r.onload=e=>document.getElementById("profilePreview").src=e.target.result; r.readAsDataURL(file);}
+function enforcePhoneInput(){document.querySelectorAll('.phone-only').forEach(i=>i.addEventListener('input',function(){this.value=this.value.replace(/[^0-9+]/g,'');}));}
+function deleteAccount(){let pass=document.getElementById("confirmPass").value,msg=document.getElementById("msg");msg.innerText="";if(!pass){msg.innerText="Please enter your password.";return;}if(!confirm("Are you sure you want to permanently delete your account?")) return;fetch("/delete_account",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"password="+encodeURIComponent(pass)}).then(r=>r.json()).then(d=>{if(d.status==="wrong_password") msg.innerText="Incorrect password!"; else if(d.status==="deleted") window.location="/"; else msg.innerText="Something went wrong.";}).catch(()=>msg.innerText="Server error.");}
+window.onload=function(){enforcePhoneInput();}
+</script>
+{% endblock %}

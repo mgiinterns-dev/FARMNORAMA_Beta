@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="farm-page-wrap">
+    <div class="farm-page-header">
+        <div>
+            <p class="farm-kicker">Farm Reading Update</p>
+            <h1>Edit Reading</h1>
+            <p class="farm-subtitle">
+                Update the submitted monitoring data for <strong>{{ farm['farm_name'] }}</strong>.
+                FARMNORAMA will refresh the smart recommendations after saving.
+            </p>
+        </div>
+
+        <a href="/farms/{{ farm['id'] }}" class="farm-secondary-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Farm
+        </a>
+    </div>
+
+    <div class="farm-form-card">
+        <form method="POST" action="/farms/{{ farm['id'] }}/readings/{{ reading['id'] }}/edit">
+            <div class="farm-form-grid">
+                <div class="farm-form-group">
+                    <label for="soil_moisture">Soil Moisture (%)</label>
+                    <input type="number" step="0.01" id="soil_moisture" name="soil_moisture" value="{{ reading['soil_moisture'] or '' }}">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="ph_level">Soil pH Level</label>
+                    <input type="number" step="0.01" id="ph_level" name="ph_level" value="{{ reading['ph_level'] or '' }}">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="nitrogen">Nitrogen Level</label>
+                    <input type="number" step="0.01" id="nitrogen" name="nitrogen" value="{{ reading['nitrogen'] or '' }}">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="phosphorus">Phosphorus Level</label>
+                    <input type="number" step="0.01" id="phosphorus" name="phosphorus" value="{{ reading['phosphorus'] or '' }}">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="potassium">Potassium Level</label>
+                    <input type="number" step="0.01" id="potassium" name="potassium" value="{{ reading['potassium'] or '' }}">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="temperature">Temperature (°C)</label>
+                    <input type="number" step="0.01" id="temperature" name="temperature" value="{{ reading['temperature'] or '' }}">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="humidity">Humidity (%)</label>
+                    <input type="number" step="0.01" id="humidity" name="humidity" value="{{ reading['humidity'] or '' }}">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="irrigation_status">Irrigation Status</label>
+                    <select id="irrigation_status" name="irrigation_status">
+                        <option value="">Select irrigation status</option>
+                        <option value="Not irrigated" {% if reading['irrigation_status'] == 'Not irrigated' %}selected{% endif %}>Not irrigated</option>
+                        <option value="Recently irrigated" {% if reading['irrigation_status'] == 'Recently irrigated' %}selected{% endif %}>Recently irrigated</option>
+                        <option value="Scheduled for irrigation" {% if reading['irrigation_status'] == 'Scheduled for irrigation' %}selected{% endif %}>Scheduled for irrigation</option>
+                        <option value="No irrigation needed" {% if reading['irrigation_status'] == 'No irrigation needed' %}selected{% endif %}>No irrigation needed</option>
+                    </select>
+                </div>
+
+                <div class="farm-form-group full">
+                    <label for="pest_observation">Pest Observation</label>
+                    <textarea id="pest_observation" name="pest_observation">{{ reading['pest_observation'] or '' }}</textarea>
+                </div>
+
+                <div class="farm-form-group full">
+                    <label for="fertilizer_used">Fertilizer Used</label>
+                    <input type="text" id="fertilizer_used" name="fertilizer_used" value="{{ reading['fertilizer_used'] or '' }}">
+                </div>
+
+                <div class="farm-form-group full">
+                    <label for="notes">Additional Notes</label>
+                    <textarea id="notes" name="notes">{{ reading['notes'] or '' }}</textarea>
+                </div>
+            </div>
+
+            <div class="farm-form-actions">
+                <button type="submit" class="farm-primary-btn">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Changes
+                </button>
+
+                <a href="/farms/{{ farm['id'] }}" class="farm-secondary-btn">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

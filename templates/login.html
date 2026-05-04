@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="page-shell">
+
+    <div class="auth-box premium-auth-box">
+
+        <img src="{{ url_for('static', filename='images/farmnorama_logo.png') }}" class="big-logo premium-big-logo" alt="Farmnorama Logo">
+
+        <h2 class="welcome-text">Welcome</h2>
+        <p class="sub-text">Sign in to continue</p>
+
+        {% if error %}
+            <p class="error-text">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="/login_user">
+
+            <input type="text" name="email" placeholder="Username" required>
+
+            <div class="password-wrapper">
+                <input type="password" name="password" id="password" placeholder="Password" required>
+                <button type="button" class="toggle-eye-btn" onclick="togglePassword()" aria-label="Toggle password visibility">
+                    <i class="fa-solid fa-eye toggle-eye"></i>
+                </button>
+            </div>
+
+            <button class="auth-btn" type="submit">SIGN IN</button>
+        </form>
+
+        <a href="/forgot" class="forgot-link">Forgot Password?</a>
+
+    </div>
+
+</div>
+
+<script>
+function togglePassword(){
+    const input = document.getElementById("password");
+    const icon = document.querySelector(".toggle-eye");
+
+    if(input.type === "password"){
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    }else{
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+</script>
+{% endblock %}

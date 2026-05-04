@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="farm-page-wrap">
+    <div class="farm-page-header">
+        <div>
+            <p class="farm-kicker">Farm Profile Setup</p>
+            <h1>Add Farm</h1>
+            <p class="farm-subtitle">
+                Create a farm profile so FARMNORAMA can organize crop information, farm readings,
+                and smart recommendations based on your submitted data.
+            </p>
+        </div>
+
+        <a href="/farms" class="farm-secondary-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Farms
+        </a>
+    </div>
+
+    <div class="farm-form-card">
+        {% if error %}
+            <p class="error-text">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="/farms/add">
+            <div class="farm-form-grid">
+                <div class="farm-form-group full">
+                    <label for="farm_name">Farm Name</label>
+                    <input type="text" id="farm_name" name="farm_name" placeholder="Example: Green Valley Farm" required>
+                </div>
+
+                <div class="farm-form-group full">
+                    <label for="location">Farm Location</label>
+                    <input type="text" id="location" name="location" placeholder="Example: Laguna, Philippines">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="farm_size">Farm Size</label>
+                    <input type="text" id="farm_size" name="farm_size" placeholder="Example: 2 hectares">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="crop_type">Crop Type</label>
+                    <input type="text" id="crop_type" name="crop_type" placeholder="Example: Rice, Corn, Tomato">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="planting_date">Planting Date</label>
+                    <input type="date" id="planting_date" name="planting_date">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="expected_harvest_date">Expected Harvest Date</label>
+                    <input type="date" id="expected_harvest_date" name="expected_harvest_date">
+                </div>
+            </div>
+
+            <div class="farm-form-actions">
+                <button type="submit" class="farm-primary-btn">
+                    <i class="fa-solid fa-check"></i>
+                    Save Farm
+                </button>
+
+                <a href="/farms" class="farm-secondary-btn">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

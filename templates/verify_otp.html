@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="auth-box premium-auth-box signup-flow-box">
+    <img src="{{ url_for('static', filename='images/farmnorama_logo.png') }}" class="big-logo otp-logo" alt="Farmnorama Logo">
+
+    <div class="steps">
+        <span class="done">1</span>
+        <span class="active">2</span>
+        <span>3</span>
+    </div>
+
+    <h2 class="welcome-text">Verify OTP</h2>
+    <p class="sub-text">Step 2 of 3: Enter the OTP sent to your email</p>
+
+    {% if error %}
+    <p class="error-text">{{ error }}</p>
+    {% endif %}
+
+    {% if message %}
+    <p class="success-text">{{ message }}</p>
+    {% endif %}
+
+    <form method="POST" action="/verify_otp">
+        <input name="otp" placeholder="OTP" required>
+        <button class="auth-btn">Next Step</button>
+    </form>
+
+    <a href="/resend_otp" class="forgot-link">Resend OTP</a>
+</div>
+{% endblock %}

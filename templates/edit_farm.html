@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="farm-page-wrap">
+    <div class="farm-page-header">
+        <div>
+            <p class="farm-kicker">Farm Profile Update</p>
+            <h1>Edit Farm</h1>
+            <p class="farm-subtitle">
+                Update your farm profile details while keeping existing readings and recommendations safe.
+            </p>
+        </div>
+
+        <a href="/farms/{{ farm['id'] }}" class="farm-secondary-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Farm
+        </a>
+    </div>
+
+    <div class="farm-form-card">
+        {% if error %}
+            <p class="error-text">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="/farms/{{ farm['id'] }}/edit">
+            <div class="farm-form-grid">
+                <div class="farm-form-group full">
+                    <label for="farm_name">Farm Name</label>
+                    <input type="text" id="farm_name" name="farm_name" value="{{ farm['farm_name'] }}" required>
+                </div>
+
+                <div class="farm-form-group full">
+                    <label for="location">Farm Location</label>
+                    <input type="text" id="location" name="location" value="{{ farm['location'] or '' }}">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="farm_size">Farm Size</label>
+                    <input type="text" id="farm_size" name="farm_size" value="{{ farm['farm_size'] or '' }}">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="crop_type">Crop Type</label>
+                    <input type="text" id="crop_type" name="crop_type" value="{{ farm['crop_type'] or '' }}">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="planting_date">Planting Date</label>
+                    <input type="date" id="planting_date" name="planting_date" value="{{ farm['planting_date'] or '' }}">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="expected_harvest_date">Expected Harvest Date</label>
+                    <input type="date" id="expected_harvest_date" name="expected_harvest_date" value="{{ farm['expected_harvest_date'] or '' }}">
+                </div>
+            </div>
+
+            <div class="farm-form-actions">
+                <button type="submit" class="farm-primary-btn">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Changes
+                </button>
+
+                <a href="/farms/{{ farm['id'] }}" class="farm-secondary-btn">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

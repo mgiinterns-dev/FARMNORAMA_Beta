@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="farm-page-wrap">
+    <div class="farm-page-header">
+        <div>
+            <p class="farm-kicker">Farm Monitoring Input</p>
+            <h1>Add Reading</h1>
+            <p class="farm-subtitle">
+                Record soil, weather, irrigation, and crop observation data for
+                <strong>{{ farm['farm_name'] }}</strong>. FARMNORAMA will generate smart recommendations after saving.
+            </p>
+        </div>
+
+        <a href="/farms/{{ farm['id'] }}" class="farm-secondary-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Farm
+        </a>
+    </div>
+
+    <div class="farm-form-card">
+        <form method="POST" action="/farms/{{ farm['id'] }}/readings/add">
+            <div class="farm-form-grid">
+                <div class="farm-form-group">
+                    <label for="soil_moisture">Soil Moisture (%)</label>
+                    <input type="number" step="0.01" id="soil_moisture" name="soil_moisture" placeholder="Example: 45">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="ph_level">Soil pH Level</label>
+                    <input type="number" step="0.01" id="ph_level" name="ph_level" placeholder="Example: 6.5">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="nitrogen">Nitrogen Level</label>
+                    <input type="number" step="0.01" id="nitrogen" name="nitrogen" placeholder="Example: 25">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="phosphorus">Phosphorus Level</label>
+                    <input type="number" step="0.01" id="phosphorus" name="phosphorus" placeholder="Example: 18">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="potassium">Potassium Level</label>
+                    <input type="number" step="0.01" id="potassium" name="potassium" placeholder="Example: 20">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="temperature">Temperature (°C)</label>
+                    <input type="number" step="0.01" id="temperature" name="temperature" placeholder="Example: 30">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="humidity">Humidity (%)</label>
+                    <input type="number" step="0.01" id="humidity" name="humidity" placeholder="Example: 70">
+                </div>
+
+                <div class="farm-form-group">
+                    <label for="irrigation_status">Irrigation Status</label>
+                    <select id="irrigation_status" name="irrigation_status">
+                        <option value="">Select irrigation status</option>
+                        <option value="Not irrigated">Not irrigated</option>
+                        <option value="Recently irrigated">Recently irrigated</option>
+                        <option value="Scheduled for irrigation">Scheduled for irrigation</option>
+                        <option value="No irrigation needed">No irrigation needed</option>
+                    </select>
+                </div>
+
+                <div class="farm-form-group full">
+                    <label for="pest_observation">Pest Observation</label>
+                    <textarea id="pest_observation" name="pest_observation" placeholder="Describe any pests, leaf damage, discoloration, or disease signs observed."></textarea>
+                </div>
+
+                <div class="farm-form-group full">
+                    <label for="fertilizer_used">Fertilizer Used</label>
+                    <input type="text" id="fertilizer_used" name="fertilizer_used" placeholder="Example: Organic compost, NPK fertilizer">
+                </div>
+
+                <div class="farm-form-group full">
+                    <label for="notes">Additional Notes</label>
+                    <textarea id="notes" name="notes" placeholder="Add any extra field observations or concerns."></textarea>
+                </div>
+            </div>
+
+            <div class="farm-form-actions">
+                <button type="submit" class="farm-primary-btn">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Reading
+                </button>
+
+                <a href="/farms/{{ farm['id'] }}" class="farm-secondary-btn">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

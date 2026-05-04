@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="activity-shell">
+    <div class="activity-header">
+        <h2>My Activity</h2>
+        <p class="text-muted">Recent actions from your Farmnorama account.</p>
+    </div>
+
+    <div class="activity-card">
+        {% if logs %}
+            <div class="timeline">
+                {% for log in logs %}
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-top">
+                            <strong>{{ log['action'] }}</strong>
+                            <span>{{ log['created_at'] }}</span>
+                        </div>
+                        <p>{{ log['details'] or 'No extra details.' }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h5>No activity yet</h5>
+                <p>Your recent actions will appear here once you start using the app.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

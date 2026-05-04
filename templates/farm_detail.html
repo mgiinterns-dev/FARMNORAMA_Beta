@@ -1,0 +1,175 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="farm-page-wrap">
+    <div class="farm-page-header">
+        <div>
+            <p class="farm-kicker">Farm Monitoring Overview</p>
+            <h1>{{ farm['farm_name'] }}</h1>
+            <p class="farm-subtitle">
+                View farm profile details, monitoring readings, and smart recommendations generated
+                from FARMNORAMA’s crop management logic.
+            </p>
+        </div>
+
+        <div class="farm-form-actions">
+            <a href="/farms/{{ farm['id'] }}/readings/add" class="farm-primary-btn">
+                <i class="fa-solid fa-chart-line"></i>
+                Add Reading
+            </a>
+
+            <a href="/farms/{{ farm['id'] }}/edit" class="farm-secondary-btn">
+                <i class="fa-solid fa-pen-to-square"></i>
+                Edit Farm
+            </a>
+
+            <form method="POST" action="/farms/{{ farm['id'] }}/delete" onsubmit="return confirm('Are you sure you want to delete this farm? This will also delete its readings and recommendations.');">
+                <button type="submit" class="farm-danger-btn">
+                    <i class="fa-solid fa-trash"></i>
+                    Delete Farm
+                </button>
+            </form>
+
+            <a href="/farms" class="farm-secondary-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back
+            </a>
+        </div>
+    </div>
+
+    <div class="farm-detail-grid">
+        <div class="farm-detail-card">
+            <h2>Farm Profile</h2>
+
+            <div class="farm-detail-list">
+                <div class="farm-detail-item">
+                    <span>Location</span>
+                    <strong>{{ farm['location'] or 'Not provided' }}</strong>
+                </div>
+
+                <div class="farm-detail-item">
+                    <span>Farm Size</span>
+                    <strong>{{ farm['farm_size'] or 'Not provided' }}</strong>
+                </div>
+
+                <div class="farm-detail-item">
+                    <span>Crop Type</span>
+                    <strong>{{ farm['crop_type'] or 'Not provided' }}</strong>
+                </div>
+
+                <div class="farm-detail-item">
+                    <span>Planting Date</span>
+                    <strong>{{ farm['planting_date'] or 'Not provided' }}</strong>
+                </div>
+
+                <div class="farm-detail-item">
+                    <span>Expected Harvest</span>
+                    <strong>{{ farm['expected_harvest_date'] or 'Not provided' }}</strong>
+                </div>
+
+                <div class="farm-detail-item">
+                    <span>Created At</span>
+                    <strong>{{ farm['created_at'] }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2 class="farm-section-title">Smart Recommendations</h2>
+
+            {% if recommendations %}
+                <div class="farm-recommendation-list">
+                    {% for rec in recommendations %}
+                        <div class="farm-recommendation-card">
+                            <span class="farm-severity {{ rec['severity'] }}">
+                                {{ rec['severity'] }}
+                            </span>
+
+                            <h3>{{ rec['recommendation_type'] }}</h3>
+                            <p>{{ rec['message'] }}</p>
+                            <small>{{ rec['created_at'] }}</small>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="farm-empty-state">
+                    <div class="farm-empty-icon">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h2>No recommendations yet</h2>
+                    <p>
+                        Add your first farm reading to generate FARMNORAMA smart suggestions
+                        for irrigation, soil pH, fertilizer, and pest monitoring.
+                    </p>
+                    <a href="/farms/{{ farm['id'] }}/readings/add" class="farm-primary-btn">
+                        Add First Reading
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <br>
+
+    <h2 class="farm-section-title">Farm Readings History</h2>
+
+    {% if readings %}
+        <div class="farm-reading-list">
+            {% for reading in readings %}
+                <div class="farm-reading-card">
+                    <h3>Monitoring Reading</h3>
+                    <div class="farm-reading-meta">{{ reading['created_at'] }}</div>
+
+                    <div class="farm-reading-values">
+                        <div><strong>Soil Moisture:</strong> {{ reading['soil_moisture'] or 'N/A' }}</div>
+                        <div><strong>pH Level:</strong> {{ reading['ph_level'] or 'N/A' }}</div>
+                        <div><strong>Nitrogen:</strong> {{ reading['nitrogen'] or 'N/A' }}</div>
+                        <div><strong>Phosphorus:</strong> {{ reading['phosphorus'] or 'N/A' }}</div>
+                        <div><strong>Potassium:</strong> {{ reading['potassium'] or 'N/A' }}</div>
+                        <div><strong>Temperature:</strong> {{ reading['temperature'] or 'N/A' }}</div>
+                        <div><strong>Humidity:</strong> {{ reading['humidity'] or 'N/A' }}</div>
+                        <div><strong>Irrigation:</strong> {{ reading['irrigation_status'] or 'N/A' }}</div>
+                    </div>
+
+                    {% if reading['pest_observation'] %}
+                        <p><strong>Pest Observation:</strong> {{ reading['pest_observation'] }}</p>
+                    {% endif %}
+
+                    {% if reading['fertilizer_used'] %}
+                        <p><strong>Fertilizer Used:</strong> {{ reading['fertilizer_used'] }}</p>
+                    {% endif %}
+
+                    {% if reading['notes'] %}
+                        <p><strong>Notes:</strong> {{ reading['notes'] }}</p>
+                    {% endif %}
+
+                    <div class="farm-reading-actions">
+                        <a href="/farms/{{ farm['id'] }}/readings/{{ reading['id'] }}/edit" class="farm-secondary-btn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            Edit Reading
+                        </a>
+
+                        <form method="POST" action="/farms/{{ farm['id'] }}/readings/{{ reading['id'] }}/delete" onsubmit="return confirm('Are you sure you want to delete this reading? Its related recommendations will also be removed.');">
+                            <button type="submit" class="farm-danger-btn">
+                                <i class="fa-solid fa-trash"></i>
+                                Delete Reading
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="farm-empty-state">
+            <div class="farm-empty-icon">
+                <i class="fa-solid fa-chart-simple"></i>
+            </div>
+            <h2>No readings recorded yet</h2>
+            <p>
+                Farm readings will help the system provide better smart crop management recommendations.
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

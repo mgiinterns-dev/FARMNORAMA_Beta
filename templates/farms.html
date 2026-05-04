@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="farm-page-wrap">
+    <div class="farm-page-header">
+        <div>
+            <p class="farm-kicker">FARMNORAMA Farm Management</p>
+            <h1>My Farms</h1>
+            <p class="farm-subtitle">
+                Manage your registered farms, crop details, and smart farm monitoring records.
+            </p>
+        </div>
+
+        <a href="/farms/add" class="farm-primary-btn">
+            <i class="fa-solid fa-plus"></i>
+            Add Farm
+        </a>
+    </div>
+
+    {% if farms %}
+        <div class="farm-grid">
+            {% for farm in farms %}
+                <div class="farm-card">
+                    <div class="farm-card-top">
+                        <div class="farm-icon">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+                        <span class="farm-status">Active</span>
+                    </div>
+
+                    <h2>{{ farm['farm_name'] }}</h2>
+
+                    <div class="farm-info-list">
+                        <p>
+                            <i class="fa-solid fa-location-dot"></i>
+                            {{ farm['location'] or 'No location provided' }}
+                        </p>
+                        <p>
+                            <i class="fa-solid fa-wheat-awn"></i>
+                            {{ farm['crop_type'] or 'No crop type specified' }}
+                        </p>
+                        <p>
+                            <i class="fa-solid fa-ruler-combined"></i>
+                            {{ farm['farm_size'] or 'No farm size provided' }}
+                        </p>
+                    </div>
+
+                    <a href="/farms/{{ farm['id'] }}" class="farm-card-link">
+                        View Farm Details
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="farm-empty-state">
+            <div class="farm-empty-icon">
+                <i class="fa-solid fa-leaf"></i>
+            </div>
+            <h2>No farms added yet</h2>
+            <p>
+                Start by adding your first farm profile. This will allow FARMNORAMA to organize
+                farm data, crop details, readings, and smart recommendations.
+            </p>
+            <a href="/farms/add" class="farm-primary-btn">
+                Add Your First Farm
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

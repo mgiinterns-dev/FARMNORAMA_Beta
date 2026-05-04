@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="auth-box auth-box-lg">
+  <img src="{{ url_for('static', filename='images/farmnorama_logo.png') }}" class="auth-logo auth-logo-lg" alt="Farmnorama Logo">
+  <div class="step-progress"><div class="step done">1</div><div class="step active">2</div><div class="step">3</div></div>
+  <h2 class="welcome-text welcome-small">Admin Security Check</h2>
+  <p class="sub-text">Step 2 of 3: Enter the OTP sent to your admin email</p>
+  {% if error %}<p class="error-text">{{ error }}</p>{% endif %}
+  {% if message %}<p class="success-text">{{ message }}</p>{% endif %}
+  <form action="/admin/verify_otp" method="POST"><input name="otp" class="auth-input" placeholder="6-digit OTP" required><button class="auth-btn">Next Step</button></form>
+  <p style="margin-top:12px;"><a href="/admin/resend_otp">Resend OTP</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="auth-box">
+
+<h2>Security Settings</h2>
+<p>Change your password</p>
+
+{% if message %}
+<p style="color:green;">{{ message }}</p>
+{% endif %}
+{% if error %}
+<p class="error-text">{{ error }}</p>
+{% endif %}
+
+<form action="/change_password" method="POST">
+
+<div class="password-wrap">
+    <input id="current_password" name="current_password" type="password" class="auth-input" placeholder="Current Password" required>
+    <button type="button" class="toggle-password" onclick="togglePassword('current_password', this)" aria-label="Toggle password visibility">
+        <i class="fa-solid fa-eye"></i>
+    </button>
+</div>
+
+<div class="password-wrap">
+    <input id="new_password2" name="new_password" type="password" class="auth-input" placeholder="New Password" required>
+    <button type="button" class="toggle-password" onclick="togglePassword('new_password2', this)" aria-label="Toggle password visibility">
+        <i class="fa-solid fa-eye"></i>
+    </button>
+</div>
+
+<div class="password-wrap">
+    <input id="confirm_password" name="confirm_password" type="password" class="auth-input" placeholder="Confirm Password" required>
+    <button type="button" class="toggle-password" onclick="togglePassword('confirm_password', this)" aria-label="Toggle password visibility">
+        <i class="fa-solid fa-eye"></i>
+    </button>
+</div>
+
+<button class="auth-btn">Update Password</button>
+
+</form>
+
+</div>
+
+<script>
+function togglePassword(id, btn){
+    const input = document.getElementById(id);
+    const icon = btn.querySelector("i");
+
+    if(input.type === "password"){
+        input.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+    }else{
+        input.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+    }
+}
+</script>
+
+{% endblock %}

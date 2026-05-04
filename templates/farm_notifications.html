@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="farm-page-wrap">
+    <div class="farm-page-header">
+        <div>
+            <p class="farm-kicker">FARMNORAMA Notifications</p>
+            <h1>Farm Alerts</h1>
+            <p class="farm-subtitle">
+                View important farm alerts generated from your submitted readings.
+                You currently have <strong>{{ unread_count }}</strong> unread notification(s).
+            </p>
+        </div>
+
+        <div class="farm-form-actions">
+            <form method="POST" action="/farm-notifications/mark-read">
+                <button type="submit" class="farm-primary-btn">
+                    <i class="fa-solid fa-check-double"></i>
+                    Mark All as Read
+                </button>
+            </form>
+
+            <a href="/dashboard" class="farm-secondary-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+                Dashboard
+            </a>
+        </div>
+    </div>
+
+    {% if notifications %}
+        <div class="farm-notification-list">
+            {% for notif in notifications %}
+                <div class="farm-notification-card {% if notif['is_read'] == 0 %}unread{% endif %}">
+                    <div class="farm-notification-icon">
+                        {% if notif['is_read'] == 0 %}
+                            <i class="fa-solid fa-bell"></i>
+                        {% else %}
+                            <i class="fa-regular fa-bell"></i>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <h3>{{ notif['title'] }}</h3>
+                        <p>{{ notif['message'] }}</p>
+                        <small>
+                            {{ notif['created_at'] }}
+                            {% if notif['is_read'] == 0 %}
+                                • Unread
+                            {% else %}
+                                • Read
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="farm-empty-state">
+            <div class="farm-empty-icon">
+                <i class="fa-solid fa-bell-slash"></i>
+            </div>
+            <h2>No notifications yet</h2>
+            <p>
+                High farm alerts will appear here after readings are submitted with urgent conditions,
+                such as low soil moisture or pest observations.
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

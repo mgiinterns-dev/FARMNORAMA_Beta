@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farmnorama</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="nav-links">
+        {% if session.get('email') %}
+            {% if session.get('admin_level') in ('super_admin', 'sub_admin') or session.get('is_admin') == 1 %}
+                <a href="/admin/dashboard">Dashboard</a>
+                <a href="/admin/users">Users</a>
+                <a href="/admin/reports">Reports</a>
+            {% else %}
+                <a href="/dashboard">Dashboard</a>
+                <a href="/farms">Farms</a>
+                <a href="/farm-reports">Farm Reports</a>
+                <a href="/farm-notifications" class="notification-link">
+                    Notifications
+                    <span id="notificationBadge" class="notification-badge d-none">0</span>
+                </a>
+                <a href="/profile">Profile</a>
+            {% endif %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/signup">Sign Up</a>
+            <a href="/admin/login">Admin</a>
+        {% endif %}
+    </div>
+</header>
+
+<div class="mgi-below-header">
+    <img
+        src="{{ url_for('static', filename='images/mgi_logo.png') }}"
+        alt="MGI International Ltd. Logo"
+        style="width:82px !important; height:auto !important; max-width:82px !important; display:block !important; object-fit:contain !important;"
+    >
+</div>
+
+<div class="main-content">
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    © 2026 Farmnorama | Powered by MGI International Ltd.
+</footer>
+
+<script src="{{ url_for('static', filename='ui.js') }}"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const badge = document.getElementById("notificationBadge");
+
+    if (!badge) return;
+
+    fetch("/farm-notifications/count")
+        .then(response => response.json())
+        .then(data => {
+            const count = data.unread_count || 0;
+
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove("d-none");
+            } else {
+                badge.classList.add("d-none");
+            }
+        })
+        .catch(() => {
+            badge.classList.add("d-none");
+        });
+});
+</script>
+
+</body>
+</html>

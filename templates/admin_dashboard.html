@@ -1,0 +1,181 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="admin-dashboard-shell">
+    <div class="admin-dashboard-card">
+        <div class="admin-title-block">
+            <h2>Admin Dashboard</h2>
+            <p class="sub-text">System overview, FARMNORAMA monitoring, reports, and maintenance controls.</p>
+        </div>
+
+        {% if error %}
+            <p class="error-text">{{ error }}</p>
+        {% endif %}
+
+        <div class="admin-section-card">
+            <h4>System Overview</h4>
+
+            <div class="admin-stats-grid">
+                <div class="mini-stat">
+                    <span>Total Users</span>
+                    <strong>{{ total_users }}</strong>
+                </div>
+
+                <div class="mini-stat">
+                    <span>Verified Users</span>
+                    <strong>{{ verified_users }}</strong>
+                </div>
+
+                <div class="mini-stat">
+                    <span>Total Profiles</span>
+                    <strong>{{ total_profiles }}</strong>
+                </div>
+
+                <div class="mini-stat">
+                    <span>Total Tasks</span>
+                    <strong>{{ total_tasks }}</strong>
+                </div>
+
+                <div class="mini-stat">
+                    <span>Audit Logs</span>
+                    <strong>{{ total_logs }}</strong>
+                </div>
+
+                <div class="mini-stat">
+                    <span>Super Admins</span>
+                    <strong>{{ total_super_admins }}</strong>
+                </div>
+
+                <div class="mini-stat">
+                    <span>Sub Admins</span>
+                    <strong>{{ total_sub_admins }}</strong>
+                </div>
+
+                <div class="mini-stat">
+                    <span>Banned Users</span>
+                    <strong>{{ total_banned }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-section-card farm-admin-section">
+            <h4>FARMNORAMA Monitoring</h4>
+
+            <div class="admin-stats-grid">
+                <div class="mini-stat farm-mini-stat">
+                    <span>Total Farms</span>
+                    <strong>{{ total_farms }}</strong>
+                </div>
+
+                <div class="mini-stat farm-mini-stat">
+                    <span>Farm Readings</span>
+                    <strong>{{ total_farm_readings }}</strong>
+                </div>
+
+                <div class="mini-stat farm-mini-stat">
+                    <span>Recommendations</span>
+                    <strong>{{ total_recommendations }}</strong>
+                </div>
+
+                <div class="mini-stat farm-mini-stat alert">
+                    <span>High Alerts</span>
+                    <strong>{{ total_high_alerts }}</strong>
+                </div>
+
+                <div class="mini-stat farm-mini-stat">
+                    <span>Total Notifications</span>
+                    <strong>{{ total_notifications }}</strong>
+                </div>
+
+                <div class="mini-stat farm-mini-stat alert">
+                    <span>Unread Alerts</span>
+                    <strong>{{ unread_notifications }}</strong>
+                </div>
+
+                <div class="mini-stat farm-mini-stat">
+                    <span>Read Alerts</span>
+                    <strong>{{ read_notifications }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-section-card">
+            <h4>Latest Farm Recommendations</h4>
+
+            {% if latest_admin_recommendations %}
+                <div class="admin-farm-alert-list">
+                    {% for rec in latest_admin_recommendations %}
+                        <div class="admin-farm-alert-card">
+                            <span class="farm-severity {{ rec['severity'] }}">
+                                {{ rec['severity'] }}
+                            </span>
+
+                            <h5>{{ rec['recommendation_type'] }}</h5>
+
+                            <p>{{ rec['message'] }}</p>
+
+                            <small>
+                                {{ rec['farm_name'] }} • {{ rec['email'] }} • {{ rec['created_at'] }}
+                            </small>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">
+                    No farm recommendations have been generated yet.
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="admin-section-card">
+            <h4>Latest Farm Notifications</h4>
+
+            {% if latest_notifications %}
+                <div class="admin-farm-alert-list">
+                    {% for notif in latest_notifications %}
+                        <div class="admin-farm-alert-card">
+                            <span class="farm-severity {% if notif['is_read'] == 0 %}High{% else %}Normal{% endif %}">
+                                {% if notif['is_read'] == 0 %}
+                                    Unread
+                                {% else %}
+                                    Read
+                                {% endif %}
+                            </span>
+
+                            <h5>{{ notif['title'] }}</h5>
+
+                            <p>{{ notif['message'] }}</p>
+
+                            <small>
+                                {{ notif['email'] }} • {{ notif['created_at'] }}
+                            </small>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">
+                    No farm notifications have been generated yet.
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="admin-section-card">
+            <h4>Insights</h4>
+
+            <ul class="insight-list">
+                <li>System statistics loaded successfully.</li>
+                <li>Use Manage Users to review accounts and admin roles.</li>
+                <li>Use FARMNORAMA Monitoring to review farms, readings, recommendations, high alerts, and notifications.</li>
+                <li>Use Download Database Backup before major changes.</li>
+            </ul>
+        </div>
+
+        <div class="admin-actions">
+            <a href="/admin/users" class="auth-btn admin-link">Manage Users</a>
+            <a href="/admin/audit_logs" class="auth-btn admin-link">View Audit Logs</a>
+            <a href="/admin/export_users_report" class="auth-btn admin-link">Download Users Report</a>
+            <a href="/admin/export_farm_report" class="auth-btn admin-link">Download Farm Report</a>
+            <a href="/admin/backup_database" class="auth-btn admin-link">Download Database Backup</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="admin-box">
+    <h2>Admin Maintenance</h2>
+    <p class="sub-text">Core maintenance tools for the Farmnorama system.</p>
+
+    <div class="admin-actions">
+        <a href="/admin/users" class="auth-btn admin-link">Manage Users</a>
+        <a href="/admin/audit_logs" class="auth-btn admin-link">View Audit Logs</a>
+        <a href="/admin/backup_database" class="auth-btn admin-link">Download Database Backup</a>
+    </div>
+</div>
+{% endblock %}

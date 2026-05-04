@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="auth-box">
+<h3>Work Information</h3>
+<p class="text-muted">Step 2 of 3</p>
+
+{% if error %}
+<p class="error-text">{{ error }}</p>
+{% endif %}
+
+<form action="/save_work" method="POST">
+<label>Role</label>
+<select class="auth-input" name="role" onchange="toggleOther(this,'role_other_box')" required>
+<option value="">Select Role</option>
+<option>Farmer</option><option>Agricultural Engineer</option><option>Agronomist</option><option>Farm Manager</option><option>Livestock Handler</option><option>Fisherman</option><option>Supply Chain Manager</option><option>Warehouse Staff</option><option>Delivery Personnel</option><option>Sales Representative</option><option>Marketing Specialist</option><option>Data Analyst</option><option>Software Developer</option><option>IT Support</option><option>Project Manager</option><option>Business Owner</option><option>Entrepreneur</option><option>Student</option><option>Researcher</option><option>Government Worker</option><option>NGO Worker</option><option>Other</option>
+</select>
+<input id="role_other_box" name="role_other" class="auth-input d-none" placeholder="Please specify role">
+
+<label>Function</label>
+<select class="auth-input" name="function" onchange="toggleOther(this,'function_other_box')" required>
+<option value="">Select Function</option>
+<option>Operations</option><option>Production</option><option>Distribution</option><option>Logistics</option><option>Sales</option><option>Marketing</option><option>Customer Support</option><option>Management</option><option>Finance</option><option>IT / Technology</option><option>Research & Development</option><option>Monitoring</option><option>Reporting</option><option>Other</option>
+</select>
+<input id="function_other_box" name="function_other" class="auth-input d-none" placeholder="Please specify function">
+
+<label>Usage</label>
+<select class="auth-input" name="usage" onchange="toggleOther(this,'usage_other_box')" required>
+<option value="">Select Usage</option>
+<option>Task Tracking</option><option>Farm Management</option><option>Inventory Management</option><option>Team Collaboration</option><option>Data Monitoring</option><option>Reporting</option><option>Planning</option><option>Scheduling</option><option>Other</option>
+</select>
+<input id="usage_other_box" name="usage_other" class="auth-input d-none" placeholder="Please specify usage">
+<button class="auth-btn">Next</button>
+</form>
+</div>
+<script>
+function toggleOther(select, id){
+let box = document.getElementById(id);
+if(select.value === "Other"){
+box.classList.remove("d-none");
+box.required = true;
+}else{
+box.classList.add("d-none");
+box.required = false;
+box.value = "";
+}}
+</script>
+{% endblock %}
